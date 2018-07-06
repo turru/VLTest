@@ -14,9 +14,9 @@ public class MovementEnemy : MonoBehaviour
     int _randomZigZagDirection =  0;
     float maxJumpHeight = 4.0f;
     Vector3 _lastPositionGround;
-    float jumpSpeed = 12.0f;
-    float fallSpeed = 12.0f;
-    public bool inputJump = false;
+    float _jumpSpeed = 12.0f;
+    float _fallSpeed = 12.0f;
+    bool _inputJump = false;
     Transform _transPlayer;
 
     public enum TYPES_MOVEMENT
@@ -130,12 +130,15 @@ public class MovementEnemy : MonoBehaviour
     void Jumping()
     {
         _lastPositionGround = transform.position;
-        inputJump = true;
+        _inputJump = true;
 
         StartCoroutine(Jump());
     }
 
-    // if no left, is right
+    /// <summary>
+    /// if no left, is right, Selec direction walk enemy
+    /// </summary>
+    /// <param name="value">if no left, is right.</param>
     void LookLeftright(int value)
     {
         if(value == -1)
@@ -184,16 +187,16 @@ public class MovementEnemy : MonoBehaviour
         {
             if (transform.position.y >= maxJumpHeight)
             {
-                inputJump = false;
+                _inputJump = false;
             }
                
-            if (inputJump)
+            if (_inputJump)
             {
-                transform.Translate(Vector3.up * jumpSpeed * Time.deltaTime);   
+                transform.Translate(Vector3.up * _jumpSpeed * Time.deltaTime);   
             }
-            else if (!inputJump)
+            else if (!_inputJump)
             {
-                transform.position = Vector3.Lerp(transform.position, _lastPositionGround, fallSpeed * Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, _lastPositionGround, _fallSpeed * Time.deltaTime);
             }
 
             yield return new WaitForEndOfFrame();

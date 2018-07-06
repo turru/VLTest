@@ -10,19 +10,15 @@ public class PlayerController : MonoBehaviour {
     public Transform _cameraTR;
     public Transform _gunTR;
     public Vector2 pitchMinMax = new Vector2(-40, 85);
+    public Transform  _posCamView_1;
+    public Transform  _posCamView_2;
+    public GameObject _capsulePlayer;
 
     float yaw = 0.0f;
     float pitch = 0.0f;
-    GunSwitching _gunSwitching = null;
-
-    GameController _gameController;
-
-    public Transform  _posCamView_1;
-    public Transform  _posCamView_2;
-
     bool _camFPS = false;
-    public GameObject _capsulePlayer;
-
+    GunSwitching _gunSwitching = null;
+    GameController _gameController;
 
     // Behaviour ---------------------------------------------------------------
 

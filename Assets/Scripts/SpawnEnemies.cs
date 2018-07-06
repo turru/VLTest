@@ -11,16 +11,11 @@ public class SpawnEnemies : MonoBehaviour {
     public static SpawnEnemies _instanceRef = null;
 
     public Transform[] _pointsSpawns;
-    Collider[] _hitColliders;
+
     public GameObject _prefabSimple;
     public GameObject _prefabJumping;
     public GameObject _prefabZigZag;
     public GameObject _prefabTitan;
-
-    List<GameObject> _enemiesSimple;
-    List<GameObject> _enemiesJumping;
-    List<GameObject> _enemiesZigZag;
-    GameObject _enemiesTitan;
 
     public int _maxObjectsSimple = 0;
     public int _maxObjectsJumping = 0;
@@ -36,7 +31,13 @@ public class SpawnEnemies : MonoBehaviour {
 
     public float _timeSpawn = 0f;
     float _timeSpawnAux = 0f;
+    List<GameObject> _enemiesSimple;
+    List<GameObject> _enemiesJumping;
+    List<GameObject> _enemiesZigZag;
+    GameObject _enemiesTitan;
+    Collider[] _hitColliders;
 
+    // MonoBehaviour -------------------------------------------------------
 
 	void Awake()
 	{
@@ -110,16 +111,33 @@ public class SpawnEnemies : MonoBehaviour {
 
 	}
 
-	public void SpawnEnemie()
+    void OnEnable()
     {
-        transform.RotateAround(transform.position, Vector3.up,15f);
+        EventManagerCustom.InitGame += InitGame;
+    }
 
-        float probAuxSimple = Random.Range(0f,1f);
+    void OnDisable()
+    {
+        EventManagerCustom.InitGame -= InitGame;
+    }
+
+	void OnDestroy()
+	{
+        _instanceRef = null;
+	}
+
+    // Private --------------------------------------------------------------
+
+    public void SpawnEnemie()
+    {
+        transform.RotateAround(transform.position, Vector3.up, 15f);
+
+        float probAuxSimple = Random.Range(0f, 1f);
         float probAuxJumping = Random.Range(0f, 1f);
         float probAuxZigZag = Random.Range(0f, 1f);
 
         // Spawn Simple
-        if(probAuxSimple <= _probabilitySimple && _maxObjectsSimple > _objectsActiveSimple)
+        if (probAuxSimple <= _probabilitySimple && _maxObjectsSimple > _objectsActiveSimple)
         {
             for (int i = 0; i < _enemiesSimple.Count; i++)
             {
@@ -138,12 +156,12 @@ public class SpawnEnemies : MonoBehaviour {
                     _objectsActiveSimple++;
                     break;
                 }
-            } 
+            }
         }
 
         // Spawn Jumping
         if (probAuxJumping <= _probabilityJumping && _maxObjectsJumping > _objectsActiveJumping)
-        { 
+        {
             for (int i = 0; i < _enemiesJumping.Count; i++)
             {
                 if (!_enemiesJumping[i].activeInHierarchy)
@@ -190,7 +208,7 @@ public class SpawnEnemies : MonoBehaviour {
 
     public void SpawnTitan()
     {
-        if(_enemiesTitan.activeInHierarchy)
+        if (_enemiesTitan.activeInHierarchy)
         {
             return;
         }
@@ -232,19 +250,5 @@ public class SpawnEnemies : MonoBehaviour {
         _objectsActiveZigZag = 0;
     }
 
-    void OnEnable()
-    {
-        EventManagerCustom.InitGame += InitGame;
-    }
 
-    void OnDisable()
-    {
-        EventManagerCustom.InitGame -= InitGame;
-    }
-
-
-	void OnDestroy()
-	{
-        _instanceRef = null;
-	}
 }

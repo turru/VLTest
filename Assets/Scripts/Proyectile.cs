@@ -11,13 +11,7 @@ public class Proyectile : MonoBehaviour {
     public Rigidbody _rigidbody;
     public float _damage = 0f;
 
-    public void Run()
-    {
-        _collider.enabled = true;
-        _particleBullet.gameObject.GetComponent<AudioSource>().Play();
-        _particleBullet.Play();
-        _particleInit.Play();
-    }
+    // MonoBehaviour -------------------------------------------------------
 
     void OnCollisionEnter(Collision hit)
     {
@@ -47,8 +41,18 @@ public class Proyectile : MonoBehaviour {
         Invoke("Desactivate",1f);
     }
 
+    // Private -------------------------------------------------------------
+
 	void Desactivate()
     {
         gameObject.SetActive(false);
+    }
+
+    public void Run()
+    {
+        _collider.enabled = true;
+        _particleBullet.gameObject.GetComponent<AudioSource>().Play();
+        _particleBullet.Play();
+        _particleInit.Play();
     }
 }

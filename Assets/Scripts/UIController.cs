@@ -25,13 +25,12 @@ public class UIController : MonoBehaviour {
     [HideInInspector]
     public static UIController _instanceRef;
 
+    // MonoBehaviour -------------------------------------------------------
 	void Awake()
 	{
         _instanceRef = this;
 	}
 
-
-	// Use this for initialization
 	void Start () {
         _spawnerEnemies = GameObject.FindObjectOfType<SpawnEnemies>();
 
@@ -48,6 +47,20 @@ public class UIController : MonoBehaviour {
         _sliderInterval.value = _spawnerEnemies._timeSpawn;
 	}
 	
+    void OnEnable()
+    {
+        EventManagerCustom.UpdateUI += UpdateUI;
+    }
+
+    void OnDisable()
+    {
+        EventManagerCustom.UpdateUI -= UpdateUI;
+    }
+
+    void OnDestroy()
+    {
+        _instanceRef = null;
+    }
 
 	void UpdateUI () 
     {
@@ -55,6 +68,8 @@ public class UIController : MonoBehaviour {
         _texLife.text   = gameController.LifePlayer.ToString();
         _texDeaths.text = gameController.NumCubesDeaths.ToString();
 	}
+
+    // Publics --------------------------------------------------------------
 
     public void SetProSimple(Slider slider)
     {
@@ -128,18 +143,5 @@ public class UIController : MonoBehaviour {
 
 
 
-	void OnEnable()
-	{
-        EventManagerCustom.UpdateUI += UpdateUI;
-	}
-
-	void OnDisable()
-	{
-        EventManagerCustom.UpdateUI -= UpdateUI;
-	}
-
-	void OnDestroy()
-	{
-        _instanceRef = null;
-	}
+	
 }
