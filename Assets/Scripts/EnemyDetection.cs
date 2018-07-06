@@ -18,7 +18,7 @@ public class EnemyDetection : MonoBehaviour {
 
 	void Start () {
 
-        _playertransform = GameObject.FindWithTag("Player").transform;
+        _playertransform = GameObject.FindWithTag(Constants.SRTING_TAG_PLAYER).transform;
 
        _myTransform = GetComponent<Transform>();;
 

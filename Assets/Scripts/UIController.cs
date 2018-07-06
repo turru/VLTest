@@ -36,13 +36,13 @@ public class UIController : MonoBehaviour {
 
         UpdateUI();
 
-        _sliderProSimple.value = _spawnerEnemies._probabilitySimple;
-        _sliderProJumping.value = _spawnerEnemies._probabilityJumping;
-        _sliderProZigZag.value = _spawnerEnemies._probabilityZigZag;
+        _sliderProSimple.value = _spawnerEnemies._probabilites[0];
+        _sliderProJumping.value = _spawnerEnemies._probabilites[1];
+        _sliderProZigZag.value = _spawnerEnemies._probabilites[2];
 
-        _sliderNumSimple.value = _spawnerEnemies._maxObjectsSimple;
-        _sliderNumJumping.value = _spawnerEnemies._maxObjectsJumping;
-        _sliderNumZigZag.value = _spawnerEnemies._maxObjectsZigZag;
+        _sliderNumSimple.value = _spawnerEnemies._maxObjects[0];
+        _sliderNumJumping.value = _spawnerEnemies._maxObjects[1];
+        _sliderNumZigZag.value = _spawnerEnemies._maxObjects[2];
 
         _sliderInterval.value = _spawnerEnemies._timeSpawn;
 	}
@@ -73,32 +73,32 @@ public class UIController : MonoBehaviour {
 
     public void SetProSimple(Slider slider)
     {
-        _spawnerEnemies._probabilitySimple = slider.value;
+        _spawnerEnemies._probabilites[0] = slider.value;
     }
 
     public void SetProJumping(Slider slider)
     {
-        _spawnerEnemies._probabilityJumping = slider.value;
+        _spawnerEnemies._probabilites[1] = slider.value;
     }
 
     public void SetProZigZag(Slider slider)
     {
-        _spawnerEnemies._probabilityZigZag = slider.value;
+        _spawnerEnemies._probabilites[2] = slider.value;
     }
 
     public void SetNumSimple (Slider slider)
     {
-        _spawnerEnemies._maxObjectsSimple = (int)slider.value;
+        _spawnerEnemies._maxObjects[0] = (int)slider.value;
     }
 
     public void SetNumJumping(Slider slider)
     {
-        _spawnerEnemies._maxObjectsJumping = (int)slider.value;
+        _spawnerEnemies._maxObjects[1] = (int)slider.value;
     }
 
     public void SetNumZigZag (Slider slider)
     {
-        _spawnerEnemies._maxObjectsZigZag = (int)slider.value;
+        _spawnerEnemies._maxObjects[2] = (int)slider.value;
     }
 
     public void SetIntervalSpawn(Slider slider)

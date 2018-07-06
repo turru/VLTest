@@ -207,7 +207,7 @@ public class MovementEnemy : MonoBehaviour
 
     public void Init()
     {
-        _transPlayer = GameObject.FindWithTag("Player").transform;
+        _transPlayer = GameObject.FindWithTag(Constants.SRTING_TAG_PLAYER).transform;
         LookPlayer(_transPlayer);
     }
 }

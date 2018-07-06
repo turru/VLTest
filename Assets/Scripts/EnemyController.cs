@@ -28,7 +28,7 @@ public class EnemyController : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-        if(other.tag == "Player")
+        if(other.tag == Constants.SRTING_TAG_PLAYER)
         {
             GameController._instanceRef.LifePlayer -= _damage;
             Death();
@@ -69,13 +69,13 @@ public class EnemyController : MonoBehaviour {
         switch (_typeEnemy)
         {
             case MovementEnemy.TYPES_MOVEMENT.SIMPLE:
-                SpawnEnemies._instanceRef._objectsActiveSimple--;
+                SpawnEnemies._instanceRef._objectsActive[0]--;
                 break;
             case MovementEnemy.TYPES_MOVEMENT.JUMPING:
-                SpawnEnemies._instanceRef._objectsActiveJumping--;
+                SpawnEnemies._instanceRef._objectsActive[1]--;
                 break;
             case MovementEnemy.TYPES_MOVEMENT.ZIGZAG:
-                SpawnEnemies._instanceRef._objectsActiveZigZag--;
+                SpawnEnemies._instanceRef._objectsActive[2]--;
                 break;
             default:
                 break;

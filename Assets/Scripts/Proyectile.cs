@@ -17,7 +17,7 @@ public class Proyectile : MonoBehaviour {
     {
         foreach (ContactPoint contact in hit.contacts)
         {
-            if (contact.otherCollider.tag == "Enemy")
+            if (contact.otherCollider.tag == Constants.SRTING_TAG_ENEMY)
             {
                 EnemyController _ene = hit.gameObject.GetComponent<EnemyController>();
 

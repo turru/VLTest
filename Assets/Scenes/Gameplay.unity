@@ -1773,6 +1773,11 @@ MonoBehaviour:
   _probabilityJumping: 0
   _probabilityZigZag: 0
   _timeSpawn: 0
+  _prefabsEnemies:
+  - {fileID: 1003466325233804, guid: bd24f0ef6b342473a8e1b3437294e9d8, type: 2}
+  - {fileID: 1234102266775436, guid: a574dc93bea4a49f4ae028739806b09b, type: 2}
+  - {fileID: 1396455186959580, guid: 43b27343947204822a7e58397b5604f5, type: 2}
+  _maxObjects: 000000000000000000000000
 --- !u!1 &466825167
 GameObject:
   m_ObjectHideFlags: 0

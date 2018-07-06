@@ -25,7 +25,7 @@ public class Gun : MonoBehaviour {
 	{
         _maxObjects = 20;
 
-        GunConfiguration gunn = Resources.Load("gunConfiguration/" + name) as GunConfiguration;
+        GunConfiguration gunn = Resources.Load(Constants.PATH_CONFIGURATION_DATA + name) as GunConfiguration;
         _rate = gunn._rate;
         _damage = gunn._damage;
         _dispersion = gunn._dispersion;

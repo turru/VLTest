@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnEnemies : MonoBehaviour {
-
-
+public class SpawnEnemies : MonoBehaviour
+{
     GameController _gameController;
 
     [HideInInspector]
@@ -12,35 +11,27 @@ public class SpawnEnemies : MonoBehaviour {
 
     public Transform[] _pointsSpawns;
 
-    public GameObject _prefabSimple;
-    public GameObject _prefabJumping;
-    public GameObject _prefabZigZag;
     public GameObject _prefabTitan;
 
-    public int _maxObjectsSimple = 0;
-    public int _maxObjectsJumping = 0;
-    public int _maxObjectsZigZag = 0;
-
-    public int _objectsActiveSimple = 0;
-    public int _objectsActiveJumping = 0;
-    public int _objectsActiveZigZag = 0;
-
-    public float _probabilitySimple = 0;
-    public float _probabilityJumping = 0;
-    public float _probabilityZigZag = 0;
-
-    public float _timeSpawn = 0f;
+    [HideInInspector] public float _timeSpawn = 0f;
     float _timeSpawnAux = 0f;
-    List<GameObject> _enemiesSimple;
-    List<GameObject> _enemiesJumping;
-    List<GameObject> _enemiesZigZag;
+
     GameObject _enemiesTitan;
     Collider[] _hitColliders;
 
+    // index 0 = Simple, index 1 = Jumping, index = 1 ZigZag
+    public GameObject[] _prefabsEnemies = new GameObject[3];
+    [HideInInspector] public int[] _maxObjects = new int[3];
+    [HideInInspector] public int[] _objectsActive = new int[3];
+    [HideInInspector] public float[] _probabilites = new float[3];
+    float[] probability = new float[3];
+    List<List<GameObject>> _enemiesList;
+
+
     // MonoBehaviour -------------------------------------------------------
 
-	void Awake()
-	{
+    void Awake()
+    {
         if (_instanceRef == null)
         {
             _instanceRef = this;
@@ -48,57 +39,41 @@ public class SpawnEnemies : MonoBehaviour {
 
         _timeSpawn = 0.8f;
 
-        _probabilitySimple = 0.3f;
-        _probabilityJumping = 0.3f;
-        _probabilityZigZag = 0.3f;
+        _enemiesList = new List<List<GameObject>>();
+        for (int i = 0; i < 3; i++)
+        {
+            // init lists
+            List<GameObject> aux = new List<GameObject>();
+            _enemiesList.Add(aux);
 
-        _maxObjectsSimple = 15;
-        _maxObjectsJumping = 15;
-        _maxObjectsZigZag = 15;
+            // init array maxObjects
+            _maxObjects[i] = 15;
+            _probabilites[i] = 0.3f;
+        }
+    }
 
-        _enemiesSimple = new List<GameObject>();
-        _enemiesJumping = new List<GameObject>();
-        _enemiesZigZag = new List<GameObject>();
-	
-	}
-
-	void Start()
-	{
+    void Start()
+    {
         _gameController = GameController._instanceRef;
 
-        // Simple
-        for (int i = 0; i < _maxObjectsSimple; i++)
+        for (int i = 0; i < _maxObjects.Length ; i++)
         {
-            GameObject eneSimple = (GameObject)Instantiate(_prefabSimple);
-            eneSimple.SetActive(false);
-            _enemiesSimple.Add(eneSimple);
-        }
-
-        // Jumping
-        for (int i = 0; i < _maxObjectsJumping; i++)
-        {
-            GameObject eneSimple = (GameObject)Instantiate(_prefabJumping);
-            eneSimple.SetActive(false);
-            _enemiesJumping.Add(eneSimple);
-        }
-
-        // ZigZag
-        for (int i = 0; i < _maxObjectsZigZag; i++)
-        {
-            GameObject eneSimple = (GameObject)Instantiate(_prefabZigZag);
-            eneSimple.SetActive(false);
-            _enemiesZigZag.Add(eneSimple);
+            for (int j = 0; j < _maxObjects[i]; j++)
+            {
+                GameObject enemyGO = (GameObject)Instantiate(_prefabsEnemies[i]);
+                enemyGO.SetActive(false);
+                _enemiesList[i].Add(enemyGO);
+            }
         }
 
         // Titan
         _enemiesTitan = (GameObject)Instantiate(_prefabTitan);
         _enemiesTitan.SetActive(false);
+    }
 
-	}
-
-	void Update()
-	{
-        if(_gameController._state == GameController.GAME_STATE.GAMEPLAY)
+    void Update()
+    {
+        if (_gameController._state == GameController.GAME_STATE.GAMEPLAY)
         {
             _timeSpawnAux += Time.deltaTime;
 
@@ -108,8 +83,7 @@ public class SpawnEnemies : MonoBehaviour {
                 _timeSpawnAux = 0f;
             }
         }
-
-	}
+    }
 
     void OnEnable()
     {
@@ -121,89 +95,50 @@ public class SpawnEnemies : MonoBehaviour {
         EventManagerCustom.InitGame -= InitGame;
     }
 
-	void OnDestroy()
-	{
+    void OnDestroy()
+    {
         _instanceRef = null;
-	}
+    }
 
     // Private --------------------------------------------------------------
 
+    /// <summary>
+    /// Call spawn enemies, check if there are enemies near, if not enable enemy
+    /// </summary>
     public void SpawnEnemie()
     {
         transform.RotateAround(transform.position, Vector3.up, 15f);
 
-        float probAuxSimple = Random.Range(0f, 1f);
-        float probAuxJumping = Random.Range(0f, 1f);
-        float probAuxZigZag = Random.Range(0f, 1f);
-
-        // Spawn Simple
-        if (probAuxSimple <= _probabilitySimple && _maxObjectsSimple > _objectsActiveSimple)
+        for (int i = 0; i <= 2; i++)
         {
-            for (int i = 0; i < _enemiesSimple.Count; i++)
-            {
-                if (!_enemiesSimple[i].activeInHierarchy)
-                {
+            probability[i] = Random.Range(0f, 1f);
+        }
 
-                    _hitColliders = Physics.OverlapSphere(_pointsSpawns[0].position, 2);
-                    if (_hitColliders.Length >= 2) // 2 for , floor and object 
+        for (int i = 0; i <= 2; i++)
+        {
+            if (probability[i] <= _probabilites[i] && _maxObjects[i] > _objectsActive[i])
+            {
+                for (int j = 0; j < _enemiesList[i].Count; j++)
+                {
+                    if (!_enemiesList[i][j].activeInHierarchy)
                     {
+                        _hitColliders = Physics.OverlapSphere(_pointsSpawns[i].position, 2f); // detect  if gameobject near
+                        if (_hitColliders.Length >= 2) // 2 for , floor and object 
+                        {
+                            break;
+                        }
+
+                        _enemiesList[i][j].GetComponent<EnemyController>().Init();
+                        _enemiesList[i][j].transform.position = new Vector3(_pointsSpawns[i].position.x, _enemiesList[i][j].transform.localScale.y * 0.5f, _pointsSpawns[i].position.z);
+                        _enemiesList[i][j].transform.rotation = Quaternion.identity;
+
+                        _objectsActive[i]++;
                         break;
                     }
-
-                    _enemiesSimple[i].GetComponent<EnemyController>().Init();
-                    _enemiesSimple[i].transform.position = new Vector3(_pointsSpawns[0].position.x, 0.5f, _pointsSpawns[0].position.z);
-                    _enemiesSimple[i].transform.rotation = Quaternion.identity;
-                    _objectsActiveSimple++;
-                    break;
                 }
             }
         }
 
-        // Spawn Jumping
-        if (probAuxJumping <= _probabilityJumping && _maxObjectsJumping > _objectsActiveJumping)
-        {
-            for (int i = 0; i < _enemiesJumping.Count; i++)
-            {
-                if (!_enemiesJumping[i].activeInHierarchy)
-                {
-                    _hitColliders = Physics.OverlapSphere(_pointsSpawns[1].position, 2);
-                    if (_hitColliders.Length >= 2) // 2 for , floor and object 
-                    {
-                        break;
-                    }
-
-                    _enemiesJumping[i].GetComponent<EnemyController>().Init();
-                    _enemiesJumping[i].transform.position = new Vector3(_pointsSpawns[1].position.x, 0.25f, _pointsSpawns[1].position.z);
-                    _enemiesJumping[i].transform.rotation = Quaternion.identity;
-                    _objectsActiveJumping++;
-                    break;
-                }
-            }
-        }
-
-        // Spawn ZigZag
-        if (probAuxZigZag <= _probabilityZigZag && _maxObjectsZigZag > _objectsActiveZigZag)
-        {
-            for (int i = 0; i < _enemiesZigZag.Count; i++)
-            {
-                if (!_enemiesZigZag[i].activeInHierarchy)
-                {
-                    _hitColliders = Physics.OverlapSphere(_pointsSpawns[2].position, 2);
-                    if (_hitColliders.Length >= 2) // 2 for , floor and object 
-                    {
-                        break;
-                    }
-
-                    _enemiesZigZag[i].GetComponent<EnemyController>().Init();
-
-                    _enemiesZigZag[i].transform.position = new Vector3(_pointsSpawns[2].position.x, 0.5f, _pointsSpawns[2].position.z);
-                    _enemiesZigZag[i].transform.rotation = Quaternion.identity;
-
-                    _objectsActiveZigZag++;
-                    break;
-                }
-            }
-        }
     }
 
     public void SpawnTitan()
@@ -220,35 +155,21 @@ public class SpawnEnemies : MonoBehaviour {
 
     void InitGame()
     {
-        // Simple
-        foreach (GameObject ob in _enemiesSimple)
+        for (int i = 0; i <= 2; i++)
         {
-            ob.SetActive(false);
-        }
+            foreach (GameObject ob in _enemiesList[i])
+            {
+                ob.SetActive(false);
+            }
 
-        // Jumping
-        foreach (GameObject ob in _enemiesJumping)
-        {
-            ob.SetActive(false);
+            _objectsActive[i] = 0;
         }
-
-        // ZigZag
-        foreach (GameObject ob in _enemiesZigZag)
-        {
-            ob.SetActive(false);
-        }
-
 
         // Titan
         if (_enemiesTitan != null)
         {
             _enemiesTitan.SetActive(false);
         }
-
-        _objectsActiveSimple = 0;
-        _objectsActiveJumping = 0;
-        _objectsActiveZigZag = 0;
     }
-
 
 }
