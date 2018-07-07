@@ -20,11 +20,11 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
-  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientSkyColor: {r: 0.44852942, g: 0.81744415, b: 1, a: 1}
+  m_AmbientEquatorColor: {r: 0.2438365, g: 0.4517391, b: 0.60294116, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
@@ -51,7 +51,7 @@ LightmapSettings:
     m_AlbedoBoost: 1
     m_TemporalCoherenceThreshold: 1
     m_EnvironmentLightingMode: 0
-    m_EnableBakedLightmaps: 1
+    m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
     serializedVersion: 9
@@ -217,7 +217,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9a0af3ee970c54d069fabb4ba5d7c320, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1621,16 +1621,16 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.334
+    m_Strength: 0.734
     m_Bias: 0
     m_NormalBias: 0.45
     m_NearPlane: 0.1
@@ -1755,29 +1755,19 @@ MonoBehaviour:
   - {fileID: 1970012518}
   - {fileID: 917603584}
   - {fileID: 2110157760}
-  _prefabSimple: {fileID: 1003466325233804, guid: bd24f0ef6b342473a8e1b3437294e9d8,
-    type: 2}
-  _prefabJumping: {fileID: 1234102266775436, guid: a574dc93bea4a49f4ae028739806b09b,
-    type: 2}
-  _prefabZigZag: {fileID: 1396455186959580, guid: 43b27343947204822a7e58397b5604f5,
-    type: 2}
   _prefabTitan: {fileID: 1883784899053304, guid: 93e834040a52f4e7d90318c8bf1b053a,
     type: 2}
-  _maxObjectsSimple: 0
-  _maxObjectsJumping: 0
-  _maxObjectsZigZag: 0
-  _objectsActiveSimple: 0
-  _objectsActiveJumping: 0
-  _objectsActiveZigZag: 0
-  _probabilitySimple: 0
-  _probabilityJumping: 0
-  _probabilityZigZag: 0
   _timeSpawn: 0
   _prefabsEnemies:
   - {fileID: 1003466325233804, guid: bd24f0ef6b342473a8e1b3437294e9d8, type: 2}
   - {fileID: 1234102266775436, guid: a574dc93bea4a49f4ae028739806b09b, type: 2}
   - {fileID: 1396455186959580, guid: 43b27343947204822a7e58397b5604f5, type: 2}
   _maxObjects: 000000000000000000000000
+  _objectsActive: 000000000000000000000000
+  _probabilites:
+  - 0
+  - 0
+  - 0
 --- !u!1 &466825167
 GameObject:
   m_ObjectHideFlags: 0
