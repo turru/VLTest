@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class MovementEnemy : MonoBehaviour
 {
-    public EnemyDetection _detection;
-    public float _speed = 0f;
-    public Transform[] _pivots;
+    [SerializeField] private EnemyDetection _detection;
+    [SerializeField] private float _speed = 0f;
+    [SerializeField] private Transform[] _pivots;
     int _indexPivot = 0;
     float _timeStep = 0f;
     int _stepsZigZag = 0;
@@ -19,20 +19,20 @@ public class MovementEnemy : MonoBehaviour
     bool _inputJump = false;
     Transform _transPlayer;
 
-    public enum TYPES_MOVEMENT
+    public enum TYPES_ENEMY
     {
         SIMPLE,
         JUMPING,
         ZIGZAG,
         TITAN
     }
-    public TYPES_MOVEMENT _typeMovement;
+    public TYPES_ENEMY _typeMovement;
 
     // MonoBehaviour -------------------------------------------------------
     void Start()
     {
         Init();
-        _randomZigZagDirection = Random.Range(0, 2) * 2 - 1;
+        _randomZigZagDirection = Random.Range(0, 2) * 2 - 1; // random number between (-1, 1)
     }
 
     void Update()
@@ -48,7 +48,11 @@ public class MovementEnemy : MonoBehaviour
     }
 
     // Private --------------------------------------------------------------
-	void ChoiceMovement()
+
+    /// <summary>
+    /// Choose the movement according to the type of enemy
+    /// </summary>
+    void ChoiceMovement()
     {
         LookPlayer(_transPlayer);
 
@@ -60,17 +64,14 @@ public class MovementEnemy : MonoBehaviour
         switch (_typeMovement)
         {
             
-            case TYPES_MOVEMENT.SIMPLE:
-
-
+            case TYPES_ENEMY.SIMPLE:
                 RotateCube();
                 break;
-            case TYPES_MOVEMENT.JUMPING:
 
+            case TYPES_ENEMY.JUMPING:
                 StopAllCoroutines();
-
                 int random = Random.Range(0, 10);
-                // 40% possibilities jumping
+                // 30% possibilities jumping
                 if (random <= 3)
                 {
                     Jumping();
@@ -81,8 +82,7 @@ public class MovementEnemy : MonoBehaviour
                 }
                 break;
 
-            case TYPES_MOVEMENT.ZIGZAG:
-
+            case TYPES_ENEMY.ZIGZAG:
                 if(_detection._enemiesNear)
                 {
                     _stepsZigZag = 0;
@@ -115,13 +115,12 @@ public class MovementEnemy : MonoBehaviour
                 _stepsZigZag++;
 
                 break;
-            case TYPES_MOVEMENT.TITAN:
 
-
+            case TYPES_ENEMY.TITAN:
                 RotateCube();
                 break;
+
             default:
-              
                 break;
         }
 

@@ -5,11 +5,11 @@ using UnityEngine;
 public class EnemyDetection : MonoBehaviour {
 
     Transform _myTransform = null;
-    public float _radius = 0f;
-    public LayerMask targetMask;
+    [SerializeField] private float _radiusDetection = 0f;
+    [SerializeField] private LayerMask targetMaskDetection;
     public bool _canMove = false;
     public bool _enemiesNear = false;
-    public Transform _playertransform;
+    Transform _playertransform;
     float _distMin;
     float _disThisToPlauyer;
     Collider[] _hitColliders;
@@ -31,7 +31,7 @@ public class EnemyDetection : MonoBehaviour {
     {
         _distMin = 1000f;
         _disThisToPlauyer = Vector3.Distance(_myTransform.position, _playertransform.position);
-        _hitColliders = Physics.OverlapSphere(_myTransform.position, _radius,targetMask );
+        _hitColliders = Physics.OverlapSphere(_myTransform.position, _radiusDetection,targetMaskDetection );
 
         int i = 0;
         while (i < _hitColliders.Length)
@@ -69,9 +69,9 @@ public class EnemyDetection : MonoBehaviour {
 
     // Debug ----------------------------------------------------------------
 
-    //void OnDrawGizmosSelected()
-    //{
-    //    Gizmos.color = Color.yellow;
-    //    Gizmos.DrawWireSphere(transform.position, _radius);
-    //}
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, _radiusDetection);
+    }
 }

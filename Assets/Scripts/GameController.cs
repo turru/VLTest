@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour {
-
+    
     public enum GAME_STATE
     {
         MENU,
         GAMEPLAY,
-        PAUSE
+        PAUSE,
+        GAMEOVER
     }
 
+    [HideInInspector] public static GameController _instanceRef = null;
+
     public GAME_STATE _state;
-    [HideInInspector]
-    public static GameController _instanceRef = null;
     public  UIController _uiController;
     public GameObject _prefabParticleDamage;
-    List<GameObject> _listParticleDamage;
-    int _lifePlayer = 20;
     public bool _paused = false;
+    List<GameObject> _listParticleDamage;
 
+    int _lifePlayer = 0;
     public int LifePlayer
     {
         get { return _lifePlayer; }
@@ -43,10 +44,9 @@ public class GameController : MonoBehaviour {
         get { return _numCubesDeaths; }
         set
         {
-
             _numCubesDeaths = value;
 
-            if(_numCubesDeaths % 5 == 0 && _numCubesDeaths!= 0)
+            if(_numCubesDeaths % 5 == 0 && _numCubesDeaths!= 0 && _state == GAME_STATE.GAMEPLAY)
             {
                 SpawnEnemies._instanceRef.SpawnTitan();
             }
@@ -78,17 +78,47 @@ public class GameController : MonoBehaviour {
         Cursor.visible = true;
 
         _uiController.Menu();
-        Menu();
 	}
 
-    public void Menu()
+	void Update()
+	{
+        if(_state == GAME_STATE.GAMEPLAY)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Paused();
+            }    
+        }
+	}
+
+    // Private --------------------------------------------------------------
+
+    /// <summary>
+    /// Call to initialize the particle pool and all the start data
+    /// </summary>
+    void Init()
     {
-        _state = GAME_STATE.MENU;
-        _paused = true;
-        ActionMouse(true);
-        EventManagerCustom.InitGameMehod();
+        _listParticleDamage = new List<GameObject>();
+
+        // populate particles
+        for (int i = 0; i < 20; i++)
+        {
+            GameObject particle = (GameObject)Instantiate(_prefabParticleDamage);
+            particle.SetActive(false);
+            _listParticleDamage.Add(particle);
+        }
     }
 
+    void SetFrameRate(int rate)
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+    }
+
+    /// <summary>
+    /// Blocks or unlocks  mouse.
+    /// </summary>
+    /// <param name="stateMouse">if true, unlock the mouse, if false, lock the mouse.</param>
     void ActionMouse(bool stateMouse)
     {
         if (stateMouse)
@@ -103,8 +133,46 @@ public class GameController : MonoBehaviour {
         }
     }
 
-	public void Play()
-	{
+    /// <summary>
+    /// It is called when the player is defeated.
+    /// </summary>
+    void Gameover()
+    {
+        _state = GAME_STATE.GAMEOVER;
+        _uiController.Menu();
+    }
+
+    // Public ----------------------------------------------------------------
+	
+    public void RunParticleDamage( Vector3 position)
+    {
+        for (int i = 0; i < _listParticleDamage.Count; i++)
+        {
+            if (!_listParticleDamage[i].activeInHierarchy)
+            {
+                _listParticleDamage[i].SetActive(true);
+                _listParticleDamage[i].transform.position = position;
+                _listParticleDamage[i].transform.rotation = Quaternion.identity;
+                _listParticleDamage[i].GetComponent<ParticleSystem>().Play();
+                break;
+            }
+        }
+    }
+
+    public void Menu()
+    {
+        _state = GAME_STATE.MENU;
+        _paused = true;
+        ActionMouse(true);
+        EventManagerCustom.InitGameMehod();
+    }
+
+
+    /// <summary>
+    /// Call when we started a game
+    /// </summary>
+    public void Play()
+    {
         LifePlayer = 20;
         NumCubesDeaths = 0;
 
@@ -112,8 +180,11 @@ public class GameController : MonoBehaviour {
         _state = GAME_STATE.GAMEPLAY;
         //_paused = false;
         Paused();
-	}
+    }
 
+    /// <summary>
+    /// Call when the game is paused
+    /// </summary>
     public void Paused()
     {
         _paused = !_paused;
@@ -136,60 +207,5 @@ public class GameController : MonoBehaviour {
         }
     }
 
-	private void Update()
-	{
-        if(_state == GAME_STATE.GAMEPLAY)
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Paused();
-            }    
-        }
-	}
 
-    // Private --------------------------------------------------------------
-
-    void Init()
-    {
-        _listParticleDamage = new List<GameObject>();
-
-        // populate particles
-        for (int i = 0; i < 20; i++)
-        {
-            GameObject particle = (GameObject)Instantiate(_prefabParticleDamage);
-            particle.SetActive(false);
-            _listParticleDamage.Add(particle);
-        }
-    }
-
-    void SetFrameRate(int rate)
-    {
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 60;
-    }
-
-    void Gameover()
-    {
-        _uiController.Menu();
-        Menu();
-    }
-
-    // Public ----------------------------------------------------------------
-	
-    public void RunParticleDamage( Vector3 position)
-    {
-        for (int i = 0; i < _listParticleDamage.Count; i++)
-        {
-            if (!_listParticleDamage[i].activeInHierarchy)
-            {
-                _listParticleDamage[i].SetActive(true);
-                _listParticleDamage[i].transform.position = position;
-                _listParticleDamage[i].transform.rotation = Quaternion.identity;
-                _listParticleDamage[i].GetComponent<ParticleSystem>().Play();
-                break;
-            }
-        }
-    }
-
-   
 }

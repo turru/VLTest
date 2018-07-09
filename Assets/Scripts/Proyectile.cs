@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Proyectile : MonoBehaviour {
 
-    public ParticleSystem _particleInit;
-    public ParticleSystem _particleImpact;
-    public ParticleSystem _particleBullet;
-    public SphereCollider _collider;
-    public Rigidbody _rigidbody;
+    [SerializeField] private ParticleSystem _particleInit;
+    [SerializeField] private ParticleSystem _particleImpact;
+    [SerializeField] private ParticleSystem _particleBullet;
+    [SerializeField] private SphereCollider _collider;
+    [SerializeField] private Rigidbody _rigidbody;
     public float _damage = 0f;
 
     // MonoBehaviour -------------------------------------------------------

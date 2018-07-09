@@ -6,17 +6,16 @@ public class SpawnEnemies : MonoBehaviour
 {
     GameController _gameController;
 
-    [HideInInspector]
-    public static SpawnEnemies _instanceRef = null;
 
-    public Transform[] _pointsSpawns;
+    [HideInInspector] public static SpawnEnemies _instanceRef = null;
 
-    public GameObject _prefabTitan;
+    [SerializeField] private Transform[] _pointsSpawns; // 4 pointsSpawn, 0 enemy Simple, 1 enemy Jumping, 2 enemy ZigZag, 3 Enemy Titan
+    [SerializeField] private GameObject _prefabTitan;
 
     [HideInInspector] public float _timeSpawn = 0f;
     float _timeSpawnAux = 0f;
 
-    GameObject _enemiesTitan;
+    GameObject _enemiyTitan;
     Collider[] _hitColliders;
 
     // index 0 = Simple, index 1 = Jumping, index = 1 ZigZag
@@ -24,8 +23,9 @@ public class SpawnEnemies : MonoBehaviour
     [HideInInspector] public int[] _maxObjects = new int[3];
     [HideInInspector] public int[] _objectsActive = new int[3];
     [HideInInspector] public float[] _probabilites = new float[3];
-    float[] probability = new float[3];
+    float[] _probabilityValueCurrent = new float[3];
     List<List<GameObject>> _enemiesList;
+    float _radiusDetectionSphere = 2f;
 
 
     // MonoBehaviour -------------------------------------------------------
@@ -67,8 +67,8 @@ public class SpawnEnemies : MonoBehaviour
         }
 
         // Titan
-        _enemiesTitan = (GameObject)Instantiate(_prefabTitan);
-        _enemiesTitan.SetActive(false);
+        _enemiyTitan = (GameObject)Instantiate(_prefabTitan);
+        _enemiyTitan.SetActive(false);
     }
 
     void Update()
@@ -102,31 +102,56 @@ public class SpawnEnemies : MonoBehaviour
 
     // Private --------------------------------------------------------------
 
+    void InitGame()
+    {
+        for (int i = 0; i <= 2; i++)
+        {
+            foreach (GameObject ob in _enemiesList[i])
+            {
+                ob.SetActive(false);
+            }
+
+            _objectsActive[i] = 0;
+        }
+
+        // Titan
+        if (_enemiyTitan != null)
+        {
+            _enemiyTitan.SetActive(false);
+        }
+    }
+
+    // Public --------------------------------------------------------------
+
     /// <summary>
     /// Call spawn enemies, check if there are enemies near, if not enable enemy
     /// </summary>
     public void SpawnEnemie()
     {
-        transform.RotateAround(transform.position, Vector3.up, 15f);
+        transform.RotateAround(transform.position, Vector3.up, 21f);
 
         for (int i = 0; i <= 2; i++)
         {
-            probability[i] = Random.Range(0f, 1f);
+            _probabilityValueCurrent[i] = Random.Range(0f, 1f);
         }
 
         for (int i = 0; i <= 2; i++)
         {
-            if (probability[i] <= _probabilites[i] && _maxObjects[i] > _objectsActive[i])
+            if (_probabilityValueCurrent[i] <= _probabilites[i] && _maxObjects[i] > _objectsActive[i])
             {
                 for (int j = 0; j < _enemiesList[i].Count; j++)
                 {
                     if (!_enemiesList[i][j].activeInHierarchy)
                     {
-                        _hitColliders = Physics.OverlapSphere(_pointsSpawns[i].position, 2f); // detect  if gameobject near
-                        if (_hitColliders.Length >= 2) // 2 for , floor and object 
+
+                        // If a enemy near no spawn
+                        if(CheckEnemyNear(_pointsSpawns[i].position, _radiusDetectionSphere))
                         {
                             break;
                         }
+
+
+
 
                         _enemiesList[i][j].GetComponent<EnemyController>().Init();
                         _enemiesList[i][j].transform.position = new Vector3(_pointsSpawns[i].position.x, _enemiesList[i][j].transform.localScale.y * 0.5f, _pointsSpawns[i].position.z);
@@ -141,35 +166,46 @@ public class SpawnEnemies : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Spawns the titan.
+    /// </summary>
     public void SpawnTitan()
     {
-        if (_enemiesTitan.activeInHierarchy)
+        if (_enemiyTitan.activeInHierarchy)
         {
             return;
         }
 
-        _enemiesTitan.GetComponent<EnemyController>().Init();
-        _enemiesTitan.transform.position = new Vector3(_pointsSpawns[3].position.x, 1.5f, _pointsSpawns[3].position.z);
-        _enemiesTitan.transform.rotation = Quaternion.identity;
+        // If a enemy near no spawn
+        if (CheckEnemyNear(_pointsSpawns[3].position, _radiusDetectionSphere))
+        {
+            return;
+        }
+
+        _enemiyTitan.GetComponent<EnemyController>().Init();
+        _enemiyTitan.transform.position = new Vector3(_pointsSpawns[3].position.x, _enemiyTitan.transform.localScale.y * 0.5f, _pointsSpawns[3].position.z);
+        _enemiyTitan.transform.rotation = Quaternion.identity;
     }
 
-    void InitGame()
+    /// <summary>
+    /// Checks the enemy near.
+    /// </summary>
+    /// <returns><c>true</c>, if enemy near was checked, <c>false</c> otherwise.</returns>
+    /// <param name="position">Position of Sphere.</param>
+    /// <param name="radius">Radius Sphere.</param>
+    bool CheckEnemyNear(Vector3 position, float radius)
     {
-        for (int i = 0; i <= 2; i++)
-        {
-            foreach (GameObject ob in _enemiesList[i])
-            {
-                ob.SetActive(false);
-            }
+        bool result = false;
 
-            _objectsActive[i] = 0;
+        // If a enemy near no spawn
+        _hitColliders = Physics.OverlapSphere(position, radius); // detect a sphere raycast  if gameobject near
+        if (_hitColliders.Length >= 2) // 2 for , floor and object 
+        {
+            result = true;
         }
 
-        // Titan
-        if (_enemiesTitan != null)
-        {
-            _enemiesTitan.SetActive(false);
-        }
+
+        return result;
     }
 
 }

@@ -4,19 +4,23 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour {
 
-    public float _lifeMax = 0f;
-    public float _lifeCurrent = 0f;
-    public int _damage = 0;
-    public Color _colorInit;
-    public float _h, _s, _v;
-    public Renderer _renderer;
-    public MovementEnemy.TYPES_MOVEMENT _typeEnemy;
+    // all variables are marked as "[SerializeField] private" to debug in the inspector
+    // but its scope is private
+    [Header("Private variables")]
+    [SerializeField] private float _lifeMax = 0f;
+    [SerializeField] private float _lifeCurrent = 0f;
+    [SerializeField] private int _damage = 0;
+    [SerializeField] private Color _colorInit;
+    [SerializeField] private float _h, _s, _v;
+    [SerializeField] private Renderer _renderer = null;
+    [SerializeField] private MovementEnemy.TYPES_ENEMY _typeEnemy ;
 
     // MonoBehaviour -------------------------------------------------------
 
 	void Awake()
 	{
         _lifeCurrent = _lifeMax;
+
 	}
 
 	void Start()
@@ -68,13 +72,13 @@ public class EnemyController : MonoBehaviour {
     {
         switch (_typeEnemy)
         {
-            case MovementEnemy.TYPES_MOVEMENT.SIMPLE:
+            case MovementEnemy.TYPES_ENEMY.SIMPLE:
                 SpawnEnemies._instanceRef._objectsActive[0]--;
                 break;
-            case MovementEnemy.TYPES_MOVEMENT.JUMPING:
+            case MovementEnemy.TYPES_ENEMY.JUMPING:
                 SpawnEnemies._instanceRef._objectsActive[1]--;
                 break;
-            case MovementEnemy.TYPES_MOVEMENT.ZIGZAG:
+            case MovementEnemy.TYPES_ENEMY.ZIGZAG:
                 SpawnEnemies._instanceRef._objectsActive[2]--;
                 break;
             default:

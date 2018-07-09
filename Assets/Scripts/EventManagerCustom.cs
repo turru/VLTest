@@ -21,7 +21,7 @@ public class EventManagerCustom : MonoBehaviour {
     }
 
     public static void UpdateUIMehod()
-    {
+    {      
         if (UpdateUI != null)
         {
             UpdateUI();

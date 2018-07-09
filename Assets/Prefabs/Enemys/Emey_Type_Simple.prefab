@@ -213,13 +213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45c7f659f6b9c4fbaaaa482c48739ecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 5
-  targetMask:
+  _radiusDetection: 2
+  targetMaskDetection:
     serializedVersion: 2
     m_Bits: 256
   _canMove: 1
   _enemiesNear: 0
-  _playertransform: {fileID: 0}
 --- !u!114 &114727141325507788
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -239,7 +238,6 @@ MonoBehaviour:
   - {fileID: 4033535041218334}
   - {fileID: 4504937773628952}
   _typeMovement: 0
-  inputJump: 0
 --- !u!114 &114830988310151214
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -241,7 +241,6 @@ MonoBehaviour:
   - {fileID: 4646758630775542}
   - {fileID: 4161415109756776}
   _typeMovement: 3
-  inputJump: 0
 --- !u!114 &114867679667773020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -253,13 +252,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45c7f659f6b9c4fbaaaa482c48739ecb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _radius: 5
-  targetMask:
+  _radiusDetection: 5
+  targetMaskDetection:
     serializedVersion: 2
     m_Bits: 256
   _canMove: 1
   _enemiesNear: 0
-  _playertransform: {fileID: 0}
 --- !u!135 &135742213664905322
 SphereCollider:
   m_ObjectHideFlags: 1
